@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Register</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<style>
+body{
+background: linear-gradient(to right,#0f2027,#203a43,#2c5364);
+height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+}
+
+.card{
+width:100%;
+max-width:450px;
+border-radius:15px;
+animation: slide 0.8s ease;
+}
+
+@keyframes slide{
+from{opacity:0; transform:translateY(40px);}
+to{opacity:1; transform:translateY(0);}
+}
+
+.error{ color:red; font-size:14px; }
+.success{ color:lightgreen; font-size:14px; }
+
+.popup{
+position:fixed;
+top:20px;
+right:-300px;
+background:#28a745;
+color:white;
+padding:15px 25px;
+border-radius:8px;
+box-shadow:0 0 15px rgba(0,0,0,0.3);
+transition:0.5s;
+z-index:999;
+}
+
+.popup.show{
+right:20px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="card shadow p-4">
+<h3 class="text-center mb-3">Register</h3>
+
+<form id="registerForm">
+
+<input type="text" id="name" class="form-control mb-3" placeholder="Full Name" required>
+
+<input type="email" id="email" class="form-control mb-1" placeholder="Email" required>
+<div id="emailMsg" class="mb-2"></div>
+
+<input type="password" id="pass" class="form-control mb-2" placeholder="Password" required>
+
+<input type="password" id="confirmPass" class="form-control mb-1" placeholder="Confirm Password" required>
+<small id="passMsg"></small>
+
+<label class="mb-2">
+<input type="checkbox" id="togglePass"> Show Password
+</label>
+
+<div class="error mb-2" id="errorMsg"></div>
+
+<button class="btn btn-success w-100">Create Account</button>
+
+</form>
+</div>
+
+<!-- SUCCESS POPUP -->
+<div id="successPopup" class="popup">
+Account created successfully 🎉
+</div>
+
+<script>
+
+// EMAIL AJAX CHECK
+document.getElementById("email").addEventListener("keyup", function(){
+
+let email = this.value;
+let msg = document.getElementById("emailMsg");
+
+if(email.length > 3){
+
+fetch("check.php?email=" + email)
+.then(res => res.text())
+.then(data => {
+
+if(data.trim() === "exists"){
+msg.innerHTML = "❌ Email already registered";
+msg.className="error";
+}else{
+msg.innerHTML = "✅ Email available";
+msg.className="success";
+}
+
+});
+
+}else{
+msg.innerHTML="";
+}
+
+});
+
+
+// PASSWORD MATCH CHECK
+let pass = document.getElementById("pass");
+let confirmPass = document.getElementById("confirmPass");
+let passMsg = document.getElementById("passMsg");
+
+confirmPass.addEventListener("keyup", function(){
+
+if(pass.value !== confirmPass.value){
+passMsg.innerHTML="❌ Passwords do not match";
+passMsg.style.color="red";
+}else{
+passMsg.innerHTML="✅ Passwords match";
+passMsg.style.color="lightgreen";
+}
+
+});
+
+
+// SHOW/HIDE PASSWORD
+document.getElementById("togglePass").addEventListener("change", function(){
+
+let type = this.checked ? "text" : "password";
+pass.type = type;
+confirmPass.type = type;
+
+});
+
+
+// FINAL SUBMIT VALIDATION + POPUP
+document.getElementById("registerForm").addEventListener("submit",function(e){
+
+let error = document.getElementById("errorMsg");
+
+if(pass.value.length < 6){
+error.innerText="Password must be at least 6 characters";
+e.preventDefault();
+return;
+}
+
+if(pass.value !== confirmPass.value){
+error.innerText="Passwords do not match";
+e.preventDefault();
+return;
+}
+
+// SUCCESS POPUP
+e.preventDefault();
+
+let popup = document.getElementById("successPopup");
+popup.classList.add("show");
+
+setTimeout(()=>{
+popup.classList.remove("show");
+this.reset();
+passMsg.innerHTML="";
+document.getElementById("emailMsg").innerHTML="";
+},2500);
+
+});
+
+</script>
+
+</body>
+</html>
