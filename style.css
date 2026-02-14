@@ -11,16 +11,24 @@ header {
 }
 
 nav {
-    background: #444;
-    padding: 10px;
-    text-align: center;
+display: flex;
+justify-content: center;
+background: linear-gradient(to right, #141e30, #243b55);
+padding: 15px;
 }
 
 nav a {
-    color: white;
-    margin: 10px;
-    text-decoration: none;
+color: white;
+margin: 0 15px;
+font-weight: bold;
+transition: 0.3s;
 }
+
+nav a:hover {
+color: yellow;
+transform: scale(1.1);
+}
+
 
 section {
     padding: 20px;
@@ -31,4 +39,43 @@ footer {
     color: white;
     text-align: center;
     padding: 10px;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+    gap: 20px;
+    padding: 20px;
+}
+
+.card {
+    background: white;
+    padding: 20px;
+    box-shadow: 0px 0px 10px gray;
+    border-radius: 10px;
+}
+
+@media (max-width:768px){
+
+.grid{
+grid-template-columns:1fr;
+}
+
+@media (max-width:768px){
+nav{
+flex-direction:row;
+flex-wrap:wrap;
+}
+}
+
+
+}
+
+header{
+animation: slide 1s ease;
+}
+
+@keyframes slide{
+from{transform:translateY(-50px);opacity:0;}
+to{transform:translateY(0);opacity:1;}
 }
